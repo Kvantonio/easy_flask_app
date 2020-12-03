@@ -13,7 +13,7 @@ def index():
 
 @app.route('/requirements/')
 def requirements(data_list = None):              #1
-    link = '.' + url_for('static', filename = 'requirements.txt')
+    link = 'requirements.txt'
     data_list = []
     with open(link) as read:
         for i in read:
@@ -22,24 +22,18 @@ def requirements(data_list = None):              #1
 
 
 @app.route('/generate-users/')
-@app.route('/generate-users/<count>')
+@app.route('/generate-users/<int:count>')
 def generateusers(count=100):                    #2
-    count = escape(count)
-    if (count.isdigit() == True) and (int(count) <= 100): #проверяем на то что это число и оно сеньше 100
-        count = int(count)
-        names = [fake.unique.first_name() for i in range(count)] #создание имен
-        adr = [fake.ascii_free_email() for j in range(count)] #создание мэйлов
-        dict_data = {} 
-        for i in range(count):  #добавляем данные в словарь для удобного вызова
-            dict_data[names[i]] = adr[i]  
-        return render_template('generate-users.html', dict_data = dict_data)
-    else:
-        return '"{}" - invalid data'.format(count)
+    dict_data = {} 
+    for i in range(count):  #добавляем данные в словарь для удобного вызова
+        dict_data[fake.unique.first_name()] = fake.ascii_free_email()  
+    return render_template('generate-users.html', dict_data = dict_data)
+
 
 
 @app.route('/mean/')                            #3
 def mean():
-    link = '.' + url_for('static', filename = 'hw.csv')
+    link = 'static/hw.csv'
     t = 0 #счетчик количества данных
     height_inch = 0.0
     weight_pound = 0.0
@@ -53,6 +47,7 @@ def mean():
                 t+=1
     height_cm = (height_inch * 2.54)/t #переводим в см и получаем средний рост
     weight_kg = (weight_pound * 0.453592)/t #переводим в кг и получаем средний вес
+    #не делал перевод через библиотеки
     return render_template('mean.html', height_cm = height_cm, weight_kg = weight_kg)
 
 
